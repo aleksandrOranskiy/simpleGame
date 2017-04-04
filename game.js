@@ -24,6 +24,7 @@ BasicGame.Game.prototype = {
         this.sara.animations.add('run',[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],20,true);
         this.physics.enable(this.sara,Phaser.Physics.ARCADE);
         this.sara.play('run');
+        this.cursors = this.input.keyboard.createCursorKeys();
     },
 
     update: function() {
