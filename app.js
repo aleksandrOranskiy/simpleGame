@@ -1,6 +1,6 @@
 window.onload = function() {
 
-    var game = new Phaser.Game(850, 600, Phaser.CANVAS, 'gameContainer');
+    var game = new Phaser.Game(832, 640, Phaser.CANVAS, 'gameContainer');
 
     game.state.add('Game',BasicGame.Game);
 
