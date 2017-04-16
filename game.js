@@ -5,11 +5,27 @@ BasicGame.Game = function(game) {
 BasicGame.Game.prototype = {
     preload: function() {
 
-        this.load.tilemap('gameArea','assets/xs/xsLevel.json',null,Phaser.Tilemap.TILED_JSON);
-        this.load.image('tiles','assets/xs/sh32.png');
-        this.load.image('background','assets/small/bg.png');
-        this.load.spritesheet('boy','assets/boy.png',108,140,16);
-        this.load.image('coin','assets/Gold_1.png');
+        this.load.tilemap('gameArea','assets/level32px_v3.json',null,Phaser.Tilemap.TILED_JSON);
+        this.load.image('tiles','assets/sh32v2.png');
+        this.load.image('background','assets/bg.png');
+        this.load.spritesheet('boy','assets/boyv2.png',108,128,16);
+        this.load.image('tree','assets/Tree_2.png');
+        this.load.image('mush_pink','assets/Mushroom_1.png');
+        this.load.image('mush_orange','assets/Mushroom_2.png');
+        this.load.image('stone','assets/Stone.png');
+        this.load.image('bush','assets/Bush (3).png');
+        this.load.image('x','assets/hudX.png');
+        this.load.image('0','assets/hud0.png');
+        this.load.image('1','assets/hud1.png');
+        this.load.image('2','assets/hud2.png');
+        this.load.image('3','assets/hud3.png');
+        this.load.image('4','assets/hud4.png');
+        this.load.image('5','assets/hud5.png');
+        this.load.image('6','assets/hud6.png');
+        this.load.image('7','assets/hud7.png');
+        this.load.image('8','assets/hud8.png');
+        this.load.image('9','assets/hud9.png');
+        this.load.audio('jump',['assets/jump.mp3']);
     },
 
     create: function() {
@@ -19,7 +35,7 @@ BasicGame.Game.prototype = {
 
         this.background = this.add.image(0,0,'background');
         this.map = this.add.tilemap('gameArea');
-        this.map.addTilesetImage('sheet32','tiles');
+        this.map.addTilesetImage('set32v2','tiles');
 
         this.map.setCollisionBetween(1,16);
 
@@ -28,6 +44,8 @@ BasicGame.Game.prototype = {
         //this.layer.debug = true;
         this.layer.resizeWorld();
         //this.layer.wrap = true;
+
+        this.music = this.add.audio('jump');
         //--------------------
 
         //player--------------
@@ -36,20 +54,81 @@ BasicGame.Game.prototype = {
         this.boy.anchor.setTo(0.5,1);
         this.physics.enable(this.boy,Phaser.Physics.ARCADE);
         this.boy.body.linearDamping = 1;
-        this.boy.body.overlapY = 30;
         this.boy.body.bounce.y = 0.2;
         this.boy.body.gravity.y = 300;
-        this.boy.body.gravity.x = 3;
+        this.boy.body.gravity.x = 30;
         this.boy.body.collideWorldBounds = true;
         this.boy.animations.add('right',[0,1,2,3,4,5,6,7],20,false);
         this.boy.animations.add('left',[8,9,10,11,12,13,14,15],20,false);
         this.boy.speed = 150;
         //---------------------
 
-        //coin-----------------
-        this.coin = this.add.sprite(10,450,'coin');
-        this.coin.scale.setTo(0.05,0.05);
-        this.physics.enable(this.coin,Phaser.Physics.ARCADE);
+        //images---------------
+
+        this.tree_1 = this.add.image(260,75,'tree');
+        this.tree_1.scale.setTo(0.4,0.4);
+        this.tree_2 = this.add.image(480,330,'tree');
+        this.tree_2.scale.setTo(0.4,0.4);
+        this.tree_3 = this.add.image(720,10,'tree');
+        this.tree_3.scale.setTo(0.4,0.4);
+
+        this.stone = this.add.sprite(370,490,'stone');
+        this.stone.scale.setTo(0.5,0.5);
+        this.physics.enable(this.stone,Phaser.Physics.ARCADE);
+        this.stone.body.immovable = true;
+
+        this.bush_1 = this.add.image(10,90,'bush');
+        this.bush_1.scale.setTo(0.8,0.8);
+        this.bush_2 = this.add.image(770,95,'bush');
+        this.bush_2.scale.setTo(0.8,0.8);
+        this.bush_3 = this.add.image(460,415,'bush');
+        this.bush_3.scale.setTo(0.8,0.8);
+        this.bush_4 = this.add.image(10,480,'bush');
+        this.bush_4.scale.setTo(0.8,0.8);
+        this.bush_5 = this.add.image(300,480,'bush');
+        this.bush_5.scale.setTo(0.8,0.8);
+
+        this.mushGroup = this.add.group();
+        this.mush_pink_1 = this.add.sprite(80,110,'mush_pink');
+        this.mush_pink_1.scale.setTo(0.5,0.5);
+        this.mush_pink_2 = this.add.sprite(320,175,'mush_pink');
+        this.mush_pink_2.scale.setTo(0.5,0.5);
+        this.mush_pink_3 = this.add.sprite(700,110,'mush_pink');
+        this.mush_pink_3.scale.setTo(0.5,0.5);
+        this.mush_pink_4 = this.add.sprite(800,110,'mush_pink');
+        this.mush_pink_4.scale.setTo(0.5,0.5);
+        this.mush_pink_5 = this.add.sprite(340,495,'mush_pink');
+        this.mush_pink_5.scale.setTo(0.5,0.5);
+        this.mush_pink_6 = this.add.sprite(700,495,'mush_pink');
+        this.mush_pink_6.scale.setTo(0.5,0.5);
+        this.mush_pink_7 = this.add.sprite(750,365,'mush_pink');
+        this.mush_pink_7.scale.setTo(0.5,0.5);
+        this.mush_pink_8 = this.add.sprite(320,335,'mush_pink');
+        this.mush_pink_8.scale.setTo(0.5,0.5);
+        this.mush_pink_9 = this.add.sprite(100,270,'mush_pink');
+        this.mush_pink_9.scale.setTo(0.5,0.5);
+        this.mush_orange = this.add.sprite(740,110,'mush_orange');
+        this.mush_orange.scale.setTo(0.5,0.5);
+
+        this.mushGroup.add(this.mush_pink_1);
+        this.mushGroup.add(this.mush_pink_2);
+        this.mushGroup.add(this.mush_pink_3);
+        this.mushGroup.add(this.mush_pink_4);
+        this.mushGroup.add(this.mush_pink_5);
+        this.mushGroup.add(this.mush_pink_6);
+        this.mushGroup.add(this.mush_pink_7);
+        this.mushGroup.add(this.mush_pink_8);
+        this.mushGroup.add(this.mush_pink_9);
+        this.mushGroup.add(this.mush_orange);
+        this.physics.enable(this.mushGroup,Phaser.Physics.ARCADE);
+
+        this.hudX = this.add.image(1,1,'x');
+        this.hudX.scale.setTo(0.4,0.4);
+        this.hud0 = this.add.sprite(25,1,'0');
+        this.hud0.scale.setTo(0.4,0.4);
+        this.currentNumb = this.hud0;
+        this.counter = 0;
+
         //---------------------
 
         this.camera.follow(this.boy);
@@ -58,13 +137,48 @@ BasicGame.Game.prototype = {
     },
 
     collisionHandler: function(obj1,obj2) {
+        if (obj2 === this.mush_orange) {
+            obj2.destroy();
+            this.displayEnd(false);
+            return;
+        }
         obj2.destroy();
+        this.currentNumb.destroy();
+        ++this.counter;
+        if (this.counter===9) {
+            this.displayEnd(true);
+            return;
+        }
+        var str = String(this.counter);
+        this.currentNumb = this.add.sprite(25,1,str);
+        this.currentNumb.scale.setTo(0.4,0.4);
+    },
+
+    displayEnd: function(win) {
+
+        if (this.endText && this.endText.exist) {
+            return;
+        }
+        this.msg = win ? 'YOU WIN!!!' : 'GAME OVER!';
+        this.endText = this.add.text(this.width / 2, this.height / 2 - 60, this.msg,
+        { font: '72px serif', fill: 'red', boundsAlignH: 'center', boundsAlignV: 'middle'});
+        this.textWidth = this.world.width/1.2;
+        this.textHeight = this.world.height/5;
+        this.endText.setTextBounds((this.world.width-this.textWidth)/2,
+            (this.world.height-this.textHeight)/2,this.textWidth,this.textHeight);
+        this.physics.destroy();
+        
     },
 
     update: function() {
 
         this.physics.arcade.collide(this.boy,this.layer);
-        this.physics.arcade.collide(this.boy,this.coin,this.collisionHandler,null,this);
+        this.physics.arcade.collide(this.boy,this.stone);
+        this.physics.arcade.collide(this.boy,this.mushGroup,this.collisionHandler,null,this);
+
+        if (this.boy.body.bottom >= this.world.bounds.bottom) {
+            this.displayEnd(false);
+        }
 
         this.jumpTimer = 0;
         this.boy.body.velocity.x = 0;
@@ -98,13 +212,14 @@ BasicGame.Game.prototype = {
         if (this.jumpButton.isDown && this.boy.body.onFloor() && this.time.now > this.jumpTimer)
         {
             this.boy.body.velocity.y = -250;
-            this.jumpTimer = this.time.now + 750;
+            this.jumpTimer = this.time.now + 350;
+            this.music.play();
         }
 
 
     },
 
     render: function() {
-        this.game.debug.body(this.boy);
+        //this.game.debug.body(this.boy);
     }
 };
