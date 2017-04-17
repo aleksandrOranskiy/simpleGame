@@ -3,67 +3,33 @@ BasicGame.Game = function(game) {
 };
 
 BasicGame.Game.prototype = {
-    preload: function() {
+    
+    create: function() {
 
-        this.load.tilemap('gameArea','assets/level32px_v3.json',null,Phaser.Tilemap.TILED_JSON);
-        this.load.image('tiles','assets/sh32v2.png');
-        this.load.image('background','assets/bg.png');
-        this.load.spritesheet('boy','assets/boyv2.png',108,128,16);
-        this.load.image('tree','assets/Tree_2.png');
-        this.load.image('mush_pink','assets/Mushroom_1.png');
-        this.load.image('mush_orange','assets/Mushroom_2.png');
-        this.load.image('stone','assets/Stone.png');
-        this.load.image('bush','assets/Bush (3).png');
-        this.load.image('x','assets/hudX.png');
-        this.load.image('0','assets/hud0.png');
-        this.load.image('1','assets/hud1.png');
-        this.load.image('2','assets/hud2.png');
-        this.load.image('3','assets/hud3.png');
-        this.load.image('4','assets/hud4.png');
-        this.load.image('5','assets/hud5.png');
-        this.load.image('6','assets/hud6.png');
-        this.load.image('7','assets/hud7.png');
-        this.load.image('8','assets/hud8.png');
-        this.load.image('9','assets/hud9.png');
-        this.load.audio('jump',['assets/jump.mp3']);
+        this.setupTilemap();
+        this.setupMusic();
+        this.setupPlayer();
+        this.setupBackground();
+        this.setupMushrooms();
+        this.setupCounter();
+
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
     },
 
-    create: function() {
-        this.physics.startSystem(Phaser.Physics.ARCADE);
-
-        //gameArea------------
+    setupTilemap: function() {
 
         this.background = this.add.image(0,0,'background');
         this.map = this.add.tilemap('gameArea');
         this.map.addTilesetImage('set32v2','tiles');
-
         this.map.setCollisionBetween(1,16);
-
         this.layer = this.map.createLayer('Tile Layer 1');
-
-        //this.layer.debug = true;
         this.layer.resizeWorld();
-        //this.layer.wrap = true;
 
-        this.music = this.add.audio('jump');
-        //--------------------
+    },
 
-        //player--------------
-        this.boy = this.add.sprite(100,500,'boy');
-        this.boy.scale.setTo(0.4,0.4);
-        this.boy.anchor.setTo(0.5,1);
-        this.physics.enable(this.boy,Phaser.Physics.ARCADE);
-        this.boy.body.linearDamping = 1;
-        this.boy.body.bounce.y = 0.2;
-        this.boy.body.gravity.y = 300;
-        this.boy.body.gravity.x = 30;
-        this.boy.body.collideWorldBounds = true;
-        this.boy.animations.add('right',[0,1,2,3,4,5,6,7],20,false);
-        this.boy.animations.add('left',[8,9,10,11,12,13,14,15],20,false);
-        this.boy.speed = 150;
-        //---------------------
-
-        //images---------------
+    setupBackground: function() {
 
         this.tree_1 = this.add.image(260,75,'tree');
         this.tree_1.scale.setTo(0.4,0.4);
@@ -87,6 +53,33 @@ BasicGame.Game.prototype = {
         this.bush_4.scale.setTo(0.8,0.8);
         this.bush_5 = this.add.image(300,480,'bush');
         this.bush_5.scale.setTo(0.8,0.8);
+
+    },
+
+    setupMusic: function() {
+
+         this.music = this.add.audio('jump');
+
+    },
+
+    setupPlayer: function() {
+
+        this.boy = this.add.sprite(100,500,'boy');
+        this.boy.scale.setTo(0.4,0.4);
+        this.boy.anchor.setTo(0.5,1);
+        this.boy.animations.add('right',[0,1,2,3,4,5,6,7],20,false);
+        this.boy.animations.add('left',[8,9,10,11,12,13,14,15],20,false);
+        this.physics.enable(this.boy,Phaser.Physics.ARCADE);
+        this.boy.body.linearDamping = BasicGame.PLAYER_LINEAR_DAMPING;
+        this.boy.body.bounce.y = BasicGame.PLAYER_BOUNCE_Y;
+        this.boy.body.gravity.y = BasicGame.PLAYER_GRAVITY_Y;
+        this.boy.body.gravity.x = BasicGame.PLAYER_GRAVITY_X;
+        this.boy.speed = BasicGame.PLAYER_SPEED;
+        this.boy.body.collideWorldBounds = true;        
+        
+    },
+
+    setupMushrooms: function() {
 
         this.mushGroup = this.add.group();
         this.mush_pink_1 = this.add.sprite(80,110,'mush_pink');
@@ -122,6 +115,10 @@ BasicGame.Game.prototype = {
         this.mushGroup.add(this.mush_orange);
         this.physics.enable(this.mushGroup,Phaser.Physics.ARCADE);
 
+    },
+
+    setupCounter: function() {
+
         this.hudX = this.add.image(1,1,'x');
         this.hudX.scale.setTo(0.4,0.4);
         this.hud0 = this.add.sprite(25,1,'0');
@@ -129,14 +126,10 @@ BasicGame.Game.prototype = {
         this.currentNumb = this.hud0;
         this.counter = 0;
 
-        //---------------------
-
-        this.camera.follow(this.boy);
-        this.cursors = this.input.keyboard.createCursorKeys();
-        this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
     collisionHandler: function(obj1,obj2) {
+
         if (obj2 === this.mush_orange) {
             obj2.destroy();
             this.displayEnd(false);
@@ -152,6 +145,7 @@ BasicGame.Game.prototype = {
         var str = String(this.counter);
         this.currentNumb = this.add.sprite(25,1,str);
         this.currentNumb.scale.setTo(0.4,0.4);
+
     },
 
     displayEnd: function(win) {
@@ -170,7 +164,7 @@ BasicGame.Game.prototype = {
         
     },
 
-    update: function() {
+    checkCollisions: function() {
 
         this.physics.arcade.collide(this.boy,this.layer);
         this.physics.arcade.collide(this.boy,this.stone);
@@ -179,6 +173,10 @@ BasicGame.Game.prototype = {
         if (this.boy.body.bottom >= this.world.bounds.bottom) {
             this.displayEnd(false);
         }
+
+    },
+
+    processPlayerInput: function() {
 
         this.jumpTimer = 0;
         this.boy.body.velocity.x = 0;
@@ -208,18 +206,23 @@ BasicGame.Game.prototype = {
             }
 
         }
-
+            //  Jump
         if (this.jumpButton.isDown && this.boy.body.onFloor() && this.time.now > this.jumpTimer)
         {
-            this.boy.body.velocity.y = -250;
-            this.jumpTimer = this.time.now + 350;
+            this.boy.body.velocity.y = -BasicGame.PLAYER_VELOCITY_Y;
+            this.jumpTimer = this.time.now + BasicGame.PLAYER_JUMPTIMER;
             this.music.play();
         }
 
+    },
 
+    update: function() {
+
+        this.checkCollisions();
+        this.processPlayerInput();    
     },
 
     render: function() {
-        //this.game.debug.body(this.boy);
+        
     }
 };
